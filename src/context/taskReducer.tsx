@@ -4,7 +4,8 @@ type TaskAction =
   | { type: "add_task"; payload: Task }
   | { type: "delete_task"; payload: string }
   | { type: "update_task"; payload: Task }
-  | { type: "toggle_task"; payload: string };
+  | { type: "toggle_task"; payload: string }
+  | { type: "local_storage"; payload: any };
 
 export const taskReducer = (state: TaskState, action: TaskAction) => {
   switch (action.type) {
@@ -32,6 +33,10 @@ export const taskReducer = (state: TaskState, action: TaskAction) => {
           task.id === action.payload ? { ...task, done: !task.done } : task
         ),
       };
+
+    case "local_storage": {
+      return action.payload;
+    }
 
     default:
       return state;

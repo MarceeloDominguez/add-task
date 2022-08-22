@@ -39,21 +39,24 @@ interface TaskContextProps {
 
 const ContextTask = createContext({} as TaskContextProps);
 
-const init = () => {
-  try {
-    return JSON.parse(localStorage.getItem("task") || "");
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 export default function TaskContext({ children }: Props) {
-  const [taskContext, dispatch] = useReducer(taskReducer, initialState, init);
+  const [taskContext, dispatch] = useReducer(taskReducer, initialState);
   const [task, setTask] = useState({});
   const getCurrentTimestamp = () => new Date().getTime().toLocaleString();
 
   useEffect(() => {
-    localStorage.setItem("task", JSON.stringify(taskContext));
+    if (JSON.parse(localStorage.getItem("task") as any)) {
+      dispatch({
+        type: "local_storage",
+        payload: JSON.parse(localStorage.getItem("task") as any),
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (taskContext !== initialState) {
+      localStorage.setItem("task", JSON.stringify(taskContext));
+    }
   }, [taskContext]);
 
   const addNewTask = (task: Task) => {
