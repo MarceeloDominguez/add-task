@@ -40,7 +40,11 @@ interface TaskContextProps {
 const ContextTask = createContext({} as TaskContextProps);
 
 const init = () => {
-  return JSON.parse(localStorage.getItem("task") || ([] as any));
+  try {
+    return JSON.parse(localStorage.getItem("task") || "");
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default function TaskContext({ children }: Props) {
